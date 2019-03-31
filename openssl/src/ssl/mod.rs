@@ -3500,7 +3500,9 @@ impl<S> SslStream<S> {
 impl<S: Read + Write> Read for SslStream<S> {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         loop {
-            match self.ssl_read(buf) {
+            let result = self.ssl_read(buf);
+            println!("{:?} RESULT {:?}", ::std::thread::current().id(), result);
+            match result {
                 Ok(n) => return Ok(n),
                 Err(ref e) if e.code() == ErrorCode::ZERO_RETURN => return Ok(0),
                 Err(ref e) if e.code() == ErrorCode::SYSCALL && e.io_error().is_none() => {
