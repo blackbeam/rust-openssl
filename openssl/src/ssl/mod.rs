@@ -3506,6 +3506,7 @@ impl<S: Read + Write> Read for SslStream<S> {
                 Ok(n) => return Ok(n),
                 Err(ref e) if e.code() == ErrorCode::ZERO_RETURN => return Ok(0),
                 Err(ref e) if e.code() == ErrorCode::SYSCALL && e.io_error().is_none() => {
+                    println!("{:?} LAST OS ERROR {:?}", ::std::thread::current().id(), ::std::io::Error::last_os_error());
                     return Ok(0);
                 }
                 Err(ref e) if e.code() == ErrorCode::WANT_READ && e.io_error().is_none() => {}
